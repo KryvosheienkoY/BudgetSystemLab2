@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using BudgetSystemLab2.Entities;
 using BudgetSystemLab2.Navigation;
 using BudgetSystemLab2.Services;
@@ -15,12 +16,11 @@ namespace BudgetSystemLab2.Wallets
     public class WalletsViewModel : BindableBase, INavigatable<MainNavigatableTypes>
     {
         private WalletService _service;
-        private WalletDetailsViewModel _currentWallet;
+        public WalletDetailsViewModel _currentWallet;
         public ObservableCollection<WalletDetailsViewModel> Wallets { get; set; }
         private DBUser _currentUser;
-        public DelegateCommand DeleteWallet { get; }
         public DelegateCommand AddWallet { get; }
-        public DelegateCommand UpdateWallet { get; }
+     
         public WalletDetailsViewModel CurrentWallet
         {
             get
@@ -36,8 +36,7 @@ namespace BudgetSystemLab2.Wallets
 
         public WalletsViewModel()
         {
-            DeleteWallet = new DelegateCommand(DeleteCurrentWallet);
-            UpdateWallet = new DelegateCommand(UpdateCurrentWallet);
+          
             AddWallet = new DelegateCommand(AddNewWallet);
             _service = new WalletService();
             Wallets = new ObservableCollection<WalletDetailsViewModel>();
@@ -53,23 +52,30 @@ namespace BudgetSystemLab2.Wallets
             List<DBWallet> _wallets = _service.GetUserWalletsAsync(_currentUser.Login);
             foreach (var wallet in _wallets)
             {
-                Wallets.Add(new WalletDetailsViewModel(wallet));
+                Wallets.Add(new WalletDetailsViewModel(wallet, UpdateCurrentWallet, DeleteCurrentWallet));
             }
         }
-        public void DeleteCurrentWallet()
+        public void DeleteCurrentWallet(WalletDetailsViewModel wd)
         {
+        
             _service.DeleteWalletsAsync(_currentWallet.WalletGuid());
-
+            Wallets.Remove(wd);
+            RaisePropertyChanged(nameof(CurrentWallet));
+            RaisePropertyChanged(nameof(Wallets));
+            MessageBox.Show("Wallet was deleted.");
         }
-        public void UpdateCurrentWallet()
+        public void UpdateCurrentWallet(WalletDetailsViewModel wd)
         {
             _service.UpdateWallet(_currentWallet.WalletGuid().ToString(), _currentWallet.Name, _currentWallet.Balance, _currentWallet.CurrencyEntrySelected, _currentWallet.WalletOwner());
-
+            MessageBox.Show("Wallet was updated.");
         }
         public void AddNewWallet()
         {
             //_service.AddWalletsAsync(new DBWallet()) ;
-
+            DBWallet w = new DBWallet(Guid.NewGuid(), "My wallet", 0, "UAH",_currentUser.Login);
+            Wallets.Add(new WalletDetailsViewModel( w, UpdateCurrentWallet, DeleteCurrentWallet));
+            RaisePropertyChanged(nameof(Wallets));
+            MessageBox.Show("Wallet was added.");
         }
 
         public MainNavigatableTypes Type

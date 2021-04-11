@@ -27,7 +27,8 @@
         <StackPanel Grid.Row="2" >
             <TextBlock Margin="10, 10, 10, 0">Currency</TextBlock>
             <ComboBox  MinWidth="300" Margin="10" ItemsSource="{Binding Path=CurrencyEntries}"
-                  SelectedItem="{Binding Path=CurrencyEntrySelected}">
+                  SelectedItem="{Binding Path=CurrencyEntrySelected}"
+                    >
             </ComboBox>
         </StackPanel>
         <StackPanel  Grid.Row="3" >

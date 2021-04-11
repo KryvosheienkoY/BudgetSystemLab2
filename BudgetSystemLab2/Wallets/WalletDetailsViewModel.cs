@@ -6,15 +6,27 @@ using BudgetSystemLab2;
 using Prism.Mvvm;
 using System.Diagnostics;
 using BudgetSystemLab2.Entities;
+using Prism.Commands;
 
 namespace BudgetSystemLab2.Wallets
 {
     public class WalletDetailsViewModel : BindableBase
     {
         private DBWallet _wallet;
+        public DelegateCommand UpdateWallet { get; }
+        public DelegateCommand DeleteWallet { get; }
+
+        public WalletDetailsViewModel(DBWallet wallet, Action<WalletDetailsViewModel> UpdateCurrentWallet, Action<WalletDetailsViewModel> DeleteCurrentWallet)
+        {
+            _wallet = wallet;
+            UpdateWallet = new DelegateCommand(async () => UpdateCurrentWallet(this));
+            DeleteWallet = new DelegateCommand(async () => DeleteCurrentWallet(this));
+        }
+
         public Guid WalletGuid() { return _wallet.Guid; }
         public string WalletOwner() { return _wallet.Owner; }
       
+
         public string Name
         {
             get
@@ -40,24 +52,7 @@ namespace BudgetSystemLab2.Wallets
                 RaisePropertyChanged(nameof(DisplayName));
             }
         }
-        //public string Currency
-        //{
-        //    get
-        //    {
-        //        return _wallet.Currency.ToString("g");
-        //    }
-        //    set
-        //    {
-        //        //UAH is default currency
-        //        if (value.Equals("EUR"))
-        //            _wallet.Currency = Enums.Currency.EUR; 
-        //        else if (value.Equals("USD"))
-        //            _wallet.Currency = Enums.Currency.USD;
-        //        else
-        //            _wallet.Currency = Enums.Currency.UAH;
-        //        RaisePropertyChanged(nameof(DisplayName));
-        //    }
-        //}
+       
         public class CurrencyEntry
         {
             public string Name { get; set; }
@@ -110,14 +105,10 @@ namespace BudgetSystemLab2.Wallets
         {
             get
             {
-                var _cur = _wallet.Currency;
-                return $"{_wallet.Name} ({_wallet.Balance} {_cur})";
+                return $"{_wallet.Name} ({_wallet.Balance})";
             }
         }
 
-        public WalletDetailsViewModel(DBWallet wallet)
-        {
-            _wallet = wallet;
-        }
+      
     }
 }

@@ -18,7 +18,7 @@ namespace BudgetSystemLab2.Entities
 
         public override string ToString()
         {
-            return $"{Name} ({Balance} {Currency})";
+            return $"{Name} ({Balance})";
         }
 
         public DBWallet(Guid guid, string name, decimal balance, string currency, string owner )
