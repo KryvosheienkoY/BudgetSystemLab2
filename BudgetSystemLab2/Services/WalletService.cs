@@ -1,4 +1,5 @@
-﻿using DataStorage;
+﻿using BudgetSystemLab2.Entities;
+using DataStorage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,33 +10,43 @@ namespace BudgetSystemLab2.Services
 {
     public class WalletService
     {
-        private FileDataStorage<Wallet> _storage = new FileDataStorage<Wallet>();
-        private static List<Wallet> Wallets = new List<Wallet>()
-        {
-            new Wallet() {Owner=Guid.NewGuid(), Name = "wal1",Currency= Enums.Currency.USD},
-            new Wallet() {Owner=Guid.NewGuid(), Name = "wal2",Currency= Enums.Currency.UAH},
-            new Wallet() {Owner=Guid.NewGuid(), Name = "wal3",Currency= Enums.Currency.EUR},
-            new Wallet() {Owner=Guid.NewGuid(), Name = "wal4",Currency= Enums.Currency.USD},
-        };
+        private FileDataStorage<DBWallet> _storage = new FileDataStorage<DBWallet>();
 
-        public List<Wallet> GetWallets()
+        public List<DBWallet> GetUserWalletsAsync(string userLogin)
         {
-            return Wallets.ToList();
-        }
-        public async Task<List<Wallet>> GetUserWalletsAsync(Guid userGuid)
-        {
-            List<Wallet> _allWallets = await _storage.GetAllAsync();
-            List<Wallet> _userWallets = new List<Wallet>();
-            foreach (Wallet w in _allWallets)
+            List<DBWallet> _allWallets = GetAllWalletsSync();
+            List<DBWallet> _userWallets = new List<DBWallet>();
+            foreach (DBWallet w in _allWallets)
             {
-                if (w.Owner == userGuid)
+                if (w.Owner.Equals(userLogin))
                     _userWallets.Add(w);
             }
             return _userWallets;
         }
-        public async void addWalletsAsync(Wallet wallet)
+
+        public async Task<bool> AddWalletsAsync(DBWallet wallet)
         {
-            _storage.AddOrUpdateAsync(wallet);
+            if (String.IsNullOrWhiteSpace(wallet.Name) || wallet.Balance < 0)
+                throw new ArgumentException("Name or Balance is Empty.");
+         
+            await _storage.AddOrUpdateAsync(wallet);
+            return true;
+        }
+
+        public async Task<List<DBWallet>> GetAllWalletsAsync()
+        {
+            var wallets = await _storage.GetAllAsync();
+            return wallets;
+        }
+        public void UpdateWallet(string guid, string name, decimal balance, string currency, string owner)
+        {
+            DBWallet wallet = new DBWallet(Guid.Parse(guid), name, balance, currency, owner);
+            var task = Task.Run(async () => await _storage.AddOrUpdateAsync(wallet));
+        }
+        public List<DBWallet> GetAllWalletsSync()
+        {
+            var task = Task.Run(async () => await GetAllWalletsAsync());
+            return task.Result;
         }
     }
 }

@@ -5,12 +5,13 @@ using System.Windows.Controls;
 using BudgetSystemLab2;
 using Prism.Mvvm;
 using System.Diagnostics;
+using BudgetSystemLab2.Entities;
 
 namespace BudgetSystemLab2.Wallets
 {
     public class WalletDetailsViewModel : BindableBase
     {
-        private Wallet _wallet;
+        private DBWallet _wallet;
 
         public string Name
         {
@@ -71,16 +72,17 @@ namespace BudgetSystemLab2.Wallets
         }
 
 
-       // private ObservableCollection<CurrencyEntry> _currencies;
+        // private ObservableCollection<CurrencyEntry> _currencies;
 
         public ObservableCollection<string> CurrencyEntries
         {
-            get {
+            get
+            {
                 ObservableCollection<string> _currencyList = new ObservableCollection<string>();
                 _currencyList.Add("EUR");
                 _currencyList.Add("USD");
                 _currencyList.Add("UAH");
-                return _currencyList; 
+                return _currencyList;
             }
             set { }
         }
@@ -91,21 +93,15 @@ namespace BudgetSystemLab2.Wallets
         {
             get
             {
-                _currencySelected = _wallet.Currency.ToString("g");
-                Trace.WriteLine("cur - " + _wallet.Currency.ToString("g"));
-               // Console.WriteLine("cur - " + _wallet.Currency.ToString("g"));
+                _currencySelected = _wallet.Currency;
+                Trace.WriteLine("cur - " + _wallet.Currency);
+                // Console.WriteLine("cur - " + _wallet.Currency.ToString("g"));
                 return _currencySelected;
             }
             set
             {
                 _currencySelected = value;
-                //UAH is default currency
-                if (value.Equals("EUR"))
-                    _wallet.Currency = Enums.Currency.EUR;
-                else if (value.Equals("USD"))
-                    _wallet.Currency = Enums.Currency.USD;
-                else
-                    _wallet.Currency = Enums.Currency.UAH;
+                _wallet.Currency = _currencySelected;
             }
         }
 
@@ -114,12 +110,12 @@ namespace BudgetSystemLab2.Wallets
         {
             get
             {
-                var _cur = _wallet.Currency.ToString("g");
+                var _cur = _wallet.Currency;
                 return $"{_wallet.Name} ({_wallet.Balance} {_cur})";
             }
         }
 
-        public WalletDetailsViewModel(Wallet wallet)
+        public WalletDetailsViewModel(DBWallet wallet)
         {
             _wallet = wallet;
         }
