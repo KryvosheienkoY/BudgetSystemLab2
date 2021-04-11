@@ -20,7 +20,7 @@ namespace DataStorage
         public async Task AddOrUpdateAsync(TObject obj)
         {
             var stringObj = JsonSerializer.Serialize(obj);
-            
+
             using (StreamWriter sw = new StreamWriter(Path.Combine(BaseFolder, obj.Guid.ToString("N")), false))
             {
                 await sw.WriteAsync(stringObj);
@@ -43,13 +43,39 @@ namespace DataStorage
             return JsonSerializer.Deserialize<TObject>(stringObj);
         }
 
+        public async Task DeleteAsync(Guid guid)
+        {
+            string filePath = Path.Combine(BaseFolder, guid.ToString("N"));
+            if (!File.Exists(filePath))
+                return;
+            try
+            {
+                // Check if file exists with its full path    
+                if (File.Exists(filePath))
+                {
+                    // If file found, delete it    
+                    File.Delete(filePath);
+                    Console.WriteLine("File deleted.");
+                }
+                else
+                    Console.WriteLine("File not found");
+
+            }
+            catch (IOException ioExp)
+            {
+                Console.WriteLine(ioExp.Message);
+            }
+
+
+        }
+
         public async Task<List<TObject>> GetAllAsync()
         {
             var res = new List<TObject>();
             foreach (var file in Directory.EnumerateFiles(BaseFolder))
             {
                 string stringObj = null;
-                
+
                 using (StreamReader sw = new StreamReader(file))
                 {
                     stringObj = await sw.ReadToEndAsync();

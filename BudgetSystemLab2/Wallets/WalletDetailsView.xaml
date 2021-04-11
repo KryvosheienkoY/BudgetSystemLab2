@@ -32,6 +32,7 @@
         </StackPanel>
         <StackPanel  Grid.Row="3" >
             <Button Content="Delete Wallet"  Command="{Binding DeleteWallet}" Width="150"  Margin="30"/>
+            <Button Content="Update Wallet"  Command="{Binding UpdateWallet}" Width="150"  Margin="30"/>
         </StackPanel>
     </Grid>
 </UserControl>

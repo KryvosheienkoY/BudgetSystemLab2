@@ -31,6 +31,11 @@ namespace BudgetSystemLab2.Services
          
             await _storage.AddOrUpdateAsync(wallet);
             return true;
+        } 
+        public async Task<bool> DeleteWalletsAsync(Guid walletGuid)
+        {
+            await _storage.DeleteAsync(walletGuid);
+            return true;
         }
 
         public async Task<List<DBWallet>> GetAllWalletsAsync()

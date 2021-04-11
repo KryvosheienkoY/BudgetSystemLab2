@@ -12,7 +12,9 @@ namespace BudgetSystemLab2.Wallets
     public class WalletDetailsViewModel : BindableBase
     {
         private DBWallet _wallet;
-
+        public Guid WalletGuid() { return _wallet.Guid; }
+        public string WalletOwner() { return _wallet.Owner; }
+      
         public string Name
         {
             get
@@ -71,8 +73,6 @@ namespace BudgetSystemLab2.Wallets
             }
         }
 
-
-        // private ObservableCollection<CurrencyEntry> _currencies;
 
         public ObservableCollection<string> CurrencyEntries
         {
