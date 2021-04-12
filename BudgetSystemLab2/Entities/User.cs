@@ -140,7 +140,7 @@ namespace BudgetSystemLab2
 
         public override bool Validate()
         {
-            if (!(Guid == Guid.Empty) || String.IsNullOrWhiteSpace(LastName) || String.IsNullOrWhiteSpace(Email))
+            if ((Guid == Guid.Empty) || String.IsNullOrWhiteSpace(LastName) || String.IsNullOrWhiteSpace(Email))
                 return false;
             Regex regex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*@((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z");
             Match match = regex.Match(Email);
