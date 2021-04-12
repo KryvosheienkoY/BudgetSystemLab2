@@ -10,10 +10,10 @@ namespace BudgetSystemLab2.Utils
 {
     public class PasswordEncrypter
     {
-        private static readonly string KeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BudgetsSystemStorage", "EncryptionKey");
+        private static readonly string keyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BudgetsSystemStorage", "EncryptionKey");
         public static string getKey()
         {
-            return File.ReadAllText(KeyPath);
+            return File.ReadAllText(keyPath);
         }
 
         public static string Encrypt(string clearText)
@@ -61,12 +61,14 @@ namespace BudgetSystemLab2.Utils
         }
 
         //to write key to file run this function
-        private static void CreateEncryptionKey()
+        public static void InitEncryptionKey()
         {
-            //generate a cryptographic random number.
-            string EncryptionKey = "1234567890qwerty";
-            File.WriteAllText(KeyPath, EncryptionKey); ;
-
+            if (!File.Exists(keyPath))
+            {
+                //generate a cryptographic str
+                string EncryptionKey = "1234567890qwerty";
+                File.WriteAllText(keyPath, EncryptionKey); ;
+            }
         }
     }
 

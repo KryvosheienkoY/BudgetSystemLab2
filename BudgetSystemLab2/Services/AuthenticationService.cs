@@ -13,6 +13,10 @@ namespace BudgetSystemLab2.Services
     {
         private FileDataStorage<DBUser> _storage = new FileDataStorage<DBUser>();
 
+        public AuthenticationService()
+        {
+            PasswordEncrypter.InitEncryptionKey();
+        }
         public async Task<User> AuthenticateAsync(AuthenticationUser authUser)
         {
             if (String.IsNullOrWhiteSpace(authUser.Login) || String.IsNullOrWhiteSpace(authUser.Password))
