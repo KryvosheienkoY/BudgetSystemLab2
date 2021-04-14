@@ -27,7 +27,7 @@ namespace BudgetTests
             Assert.ThrowsAsync<Exception>(() => _service.RegisterUserAsync(regUser));
         }
         [Fact]
-        public async Task checkLoginAsync()
+        public async Task CheckLoginAsync()
         {
             string login = RandomDigits(20);
             string pswd = RandomDigits(20);
@@ -39,7 +39,7 @@ namespace BudgetTests
            
             AuthenticationService _service = new AuthenticationService();
             //try to login unregisted user
-            Assert.ThrowsAsync<Exception>(() => _service.AuthenticateAsync(authUser));
+            _ = Assert.ThrowsAsync<Exception>(() => _service.AuthenticateAsync(authUser));
             _ =  await _service.RegisterUserAsync(regUser);
             var user = await _service.AuthenticateAsync(authUser);
             Assert.Equal(login,user.Login);

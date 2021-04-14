@@ -9,6 +9,7 @@
     public enum MainNavigatableTypes
     {
         Auth,
-        Wallets
+        Wallets,
+        Transactions
     }
 }

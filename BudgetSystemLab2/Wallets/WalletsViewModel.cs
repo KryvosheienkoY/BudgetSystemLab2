@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using BudgetSystemLab2.Entities;
 using BudgetSystemLab2.Navigation;
 using BudgetSystemLab2.Services;
@@ -17,10 +20,23 @@ namespace BudgetSystemLab2.Wallets
     {
         private WalletService _service;
         public WalletDetailsViewModel _currentWallet;
-        public ObservableCollection<WalletDetailsViewModel> Wallets { get; set; }
         private DBUser _currentUser;
+        private bool _isWalletPanelEnabled = true;
+
+        public bool IsWalletPanelEnabled
+        {
+            get
+            {
+                return _isWalletPanelEnabled;
+            }
+            set
+            {
+                _isWalletPanelEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
         public DelegateCommand AddWallet { get; }
-     
+        public ObservableCollection<WalletDetailsViewModel> Wallets { get; set; }
         public WalletDetailsViewModel CurrentWallet
         {
             get
@@ -30,52 +46,87 @@ namespace BudgetSystemLab2.Wallets
             set
             {
                 _currentWallet = value;
+                WalletService.CurrentWallet = _currentWallet.Wallet;
                 RaisePropertyChanged();
             }
         }
 
         public WalletsViewModel()
         {
-          
+
             AddWallet = new DelegateCommand(AddNewWallet);
             _service = new WalletService();
             Wallets = new ObservableCollection<WalletDetailsViewModel>();
             _currentUser = LoginedUser.User;
-            //DBWallet w = new DBWallet(Guid.NewGuid(), "myWallet13", 13, "USD", "13");
-            //DBWallet w1 = new DBWallet(Guid.NewGuid(), "myWallet133", 130, "EUR", "13");
-            //_service.AddWalletsAsync(w);
-            //_service.AddWalletsAsync(w1); 
-            //DBWallet w2 = new DBWallet(Guid.NewGuid(), "myWallet11", 11, "USD", "11");
-            //DBWallet w3 = new DBWallet(Guid.NewGuid(), "myWallet111", 110, "EUR", "11");
-            //_service.AddWalletsAsync(w2);
-            //_service.AddWalletsAsync(w3);
-            List<DBWallet> _wallets = _service.GetUserWalletsAsync(_currentUser.Login);
-            foreach (var wallet in _wallets)
+            AddWalletsView();
+        }
+
+        private async void AddWalletsView()
+        {
+            List<DBWallet> _wallets = null;
+            try
             {
-                Wallets.Add(new WalletDetailsViewModel(wallet, UpdateCurrentWallet, DeleteCurrentWallet));
+                IsWalletPanelEnabled = false;
+                 
+                _wallets = await _service.GetUserWalletsAsync(_currentUser.Login);
+                foreach (var wallet in _wallets)
+                {
+                    Wallets.Add(new WalletDetailsViewModel(wallet, _service, DeleteCurrentWallet));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Wallets loading was failed: {ex.Message}");
+                return;
+            }
+            finally
+            {
+                IsWalletPanelEnabled = true;
             }
         }
-        public void DeleteCurrentWallet(WalletDetailsViewModel wd)
+
+        public async void AddNewWallet()
         {
-        
-            _service.DeleteWalletsAsync(_currentWallet.WalletGuid());
-            Wallets.Remove(wd);
-            RaisePropertyChanged(nameof(CurrentWallet));
-            RaisePropertyChanged(nameof(Wallets));
-            MessageBox.Show("Wallet was deleted.");
+            try
+            {
+                IsWalletPanelEnabled = false;
+                DBWallet w = new DBWallet(Guid.NewGuid(), "My wallet", 0, "UAH", _currentUser.Login);
+                await _service.AddWalletsAsync(w);
+                Wallets.Add(new WalletDetailsViewModel(w, _service, DeleteCurrentWallet));
+                RaisePropertyChanged(nameof(Wallets));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Wallet add was failed: {ex.Message}");
+                return;
+            }
+            finally
+            {
+                IsWalletPanelEnabled = true;
+            }
+            MessageBox.Show($"Wallet was added successfully!");
         }
-        public void UpdateCurrentWallet(WalletDetailsViewModel wd)
+
+        public async void DeleteCurrentWallet(WalletDetailsViewModel wd)
         {
-            _service.UpdateWallet(_currentWallet.WalletGuid().ToString(), _currentWallet.Name, _currentWallet.Balance, _currentWallet.CurrencyEntrySelected, _currentWallet.WalletOwner());
-            MessageBox.Show("Wallet was updated.");
-        }
-        public void AddNewWallet()
-        {
-            //_service.AddWalletsAsync(new DBWallet()) ;
-            DBWallet w = new DBWallet(Guid.NewGuid(), "My wallet", 0, "UAH",_currentUser.Login);
-            Wallets.Add(new WalletDetailsViewModel( w, UpdateCurrentWallet, DeleteCurrentWallet));
-            RaisePropertyChanged(nameof(Wallets));
-            MessageBox.Show("Wallet was added.");
+            try
+            {
+                IsWalletPanelEnabled = false;
+                await _service.DeleteWalletsAsync(_currentWallet.WalletGuid());
+                Wallets.Remove(wd);
+                RaisePropertyChanged(nameof(CurrentWallet));
+                RaisePropertyChanged(nameof(Wallets));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Wallet delete was failed: {ex.Message}");
+                return;
+            }
+            finally
+            {
+                IsWalletPanelEnabled = true;
+            }
+            MessageBox.Show($"Wallet was deleted successfully!");
         }
 
         public MainNavigatableTypes Type
@@ -86,8 +137,8 @@ namespace BudgetSystemLab2.Wallets
             }
         }
         public void ClearSensitiveData()
-        {
-
+        {        
         }
+     
     }
 }

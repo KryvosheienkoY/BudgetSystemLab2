@@ -8,7 +8,7 @@ namespace BudgetSystemLab2
 {
     public static class CurrencyConverter
     {
-        private static Dictionary<Enums.Currency, decimal> _coefMap = new Dictionary<Enums.Currency, decimal>
+        private static Dictionary<Enums.Currency, decimal> CoefMap = new Dictionary<Enums.Currency, decimal>
         {
             [Enums.Currency.EUR] = 0.84m,
             [Enums.Currency.UAH] = 27.75m,
@@ -16,7 +16,13 @@ namespace BudgetSystemLab2
         };
         public static decimal Convert(decimal amount, Enums.Currency currencyFrom, Enums.Currency currencyTo)
         {
-            return (_coefMap.ContainsKey(currencyTo) && _coefMap.ContainsKey(currencyFrom)) ? amount * _coefMap[currencyTo] / _coefMap[currencyFrom] : decimal.MinValue;
+            return (CoefMap.ContainsKey(currencyTo) && CoefMap.ContainsKey(currencyFrom)) ? amount * CoefMap[currencyTo] / CoefMap[currencyFrom] : decimal.MinValue;
+        } 
+        public static decimal Convert(decimal amount, string currencyFrom, string currencyTo)
+        {
+            Enums.Currency from = (Enums.Currency)Enum.Parse(typeof(Enums.Currency), currencyFrom, true);
+            Enums.Currency to = (Enums.Currency)Enum.Parse(typeof(Enums.Currency), currencyTo, true);
+            return (CoefMap.ContainsKey(to) && CoefMap.ContainsKey(from)) ? amount * CoefMap[to] / CoefMap[from] : decimal.MinValue;
         }
     }
 }

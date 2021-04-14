@@ -4,14 +4,10 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using BudgetSystemLab2.Navigation;
-//using BudgetSystemLab2.Navigation;
 using BudgetSystemLab2;
 using BudgetSystemLab2.Services;
-//using BudgetSystemLab2.Services;
 using Prism.Commands;
-//using Models.Users;
-//using BudgetSystemLab2.Services;
-//using Prism.Commands;
+using System.Threading;
 
 namespace BudgetSystemLab2.Authentication
 {
@@ -100,7 +96,9 @@ namespace BudgetSystemLab2.Authentication
                 try
                 {
                     IsEnabled = false;
+                    //await Task.Delay(10000);
                     user = await authService.AuthenticateAsync(_authUser);
+
                 }
                 catch (Exception ex)
                 {
@@ -134,6 +132,6 @@ namespace BudgetSystemLab2.Authentication
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
+
     }
 }

@@ -10,15 +10,15 @@ namespace BudgetSystemLab2.Utils
 {
     public class PasswordEncrypter
     {
-        private static readonly string keyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BudgetsSystemStorage", "EncryptionKey");
-        public static string getKey()
+        private static readonly string KeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BudgetsSystemStorage", "EncryptionKey");
+        public static string GetKey()
         {
-            return File.ReadAllText(keyPath);
+            return File.ReadAllText(KeyPath);
         }
 
         public static string Encrypt(string clearText)
         {
-            string EncryptionKey = getKey();
+            string EncryptionKey = GetKey();
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
@@ -39,7 +39,7 @@ namespace BudgetSystemLab2.Utils
         }
         public static string Decrypt(string cipherText)
         {
-            string EncryptionKey = getKey();
+            string EncryptionKey = GetKey();
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
@@ -63,11 +63,11 @@ namespace BudgetSystemLab2.Utils
         //to write key to file run this function
         public static void InitEncryptionKey()
         {
-            if (!File.Exists(keyPath))
+            if (!File.Exists(KeyPath))
             {
                 //generate a cryptographic str
                 string EncryptionKey = "1234567890qwerty";
-                File.WriteAllText(keyPath, EncryptionKey); ;
+                File.WriteAllText(KeyPath, EncryptionKey); ;
             }
         }
     }
