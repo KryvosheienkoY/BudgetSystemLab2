@@ -73,26 +73,7 @@ namespace BudgetSystemLab2.Wallets
         {
             return !String.IsNullOrWhiteSpace(Name);
         }
-        //public async void DeleteCurrentWallet()
-        //{
-        //    try
-        //    {
-        //        //IsWalletEnabled = false;
-        //        await _service.DeleteWalletsAsync(_wallet.Guid);
-        //        RaisePropertyChanged(nameof(_wallet));
-        //        RaisePropertyChanged(nameof(Wallets));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Wallet delete was failed: {ex.Message}");
-        //        return;
-        //    }
-        //    finally
-        //    {
-        //        IsWalletEnabled = true;
-        //    }
-        //    MessageBox.Show($"Wallet was deleted successfully!");
-        //}
+      
 
         public string Name
         {

@@ -37,5 +37,6 @@ namespace BudgetSystemLab2.Navigation
         }
 
         protected abstract INavigatable<TObject> CreateViewModel(TObject type);
+    
     }
 }

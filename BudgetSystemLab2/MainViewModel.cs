@@ -12,7 +12,7 @@ namespace BudgetSystemLab2
         {
             Navigate(MainNavigatableTypes.Auth);
         }
-        
+
         protected override INavigatable<MainNavigatableTypes> CreateViewModel(MainNavigatableTypes type)
         {
             if (type == MainNavigatableTypes.Auth)
@@ -21,6 +21,7 @@ namespace BudgetSystemLab2
             }
             else
             {
+                //return new WalletBaseViewModel();
                 return new WalletsViewModel();
             }
         }

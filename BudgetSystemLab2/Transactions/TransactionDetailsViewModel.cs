@@ -51,7 +51,7 @@ namespace BudgetSystemLab2.Transactions
             try
             {
                 IsTransactionEnabled = false;
-                await _service.UpdateTransaction(Sum, CurrencyEntrySelected, DateTime.Now, " ", Guid.NewGuid(), WalletService.CurrentWallet.Guid);
+                await _service.UpdateTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, Description, _transaction.UserId, _transaction.WalletId);
 
             }
             catch (Exception ex)
@@ -70,28 +70,7 @@ namespace BudgetSystemLab2.Transactions
             //return !String.IsNullOrWhiteSpace(Sum);
             return true;
         }
-        //public async void DeleteCurrentTransaction()
-        //{
-        //    try
-        //    {
-        //        //IsTransactionEnabled = false;
-        //        await _service.DeleteTransactionsAsync(_transaction.Guid);
-        //        RaisePropertyChanged(nameof(_transaction));
-        //        RaisePropertyChanged(nameof(Transactions));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Transaction delete was failed: {ex.Message}");
-        //        return;
-        //    }
-        //    finally
-        //    {
-        //        IsTransactionEnabled = true;
-        //    }
-        //    MessageBox.Show($"Transaction was deleted successfully!");
-        //}
-
-
+       
         public decimal Sum
         {
             get
@@ -104,7 +83,31 @@ namespace BudgetSystemLab2.Transactions
                 RaisePropertyChanged(nameof(DisplayName));
             }
         }
-
+           public string Description
+        {
+            get
+            {
+                return _transaction.Description;
+            }
+            set
+            {
+                _transaction.Description = value;
+                RaisePropertyChanged(nameof(DisplayName));
+            }
+        }
+        
+        public DateTime DateTime
+        {
+            get
+            {
+                return _transaction.DateTime;
+            }
+            set
+            {
+                _transaction.DateTime = value;
+                RaisePropertyChanged();
+            }
+        }
         public class CurrencyEntry
         {
             public string Name { get; set; }
