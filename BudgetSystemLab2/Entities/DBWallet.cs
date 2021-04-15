@@ -13,10 +13,10 @@ namespace BudgetSystemLab2.Entities
         public string Name { get; set; }
         public decimal Balance { get; set; }
         public string Currency { get; set; }
-        public string Owner { get; set; }
+        public string Owner { get; set; } 
+        public string Description { get; set; }
         public Guid Guid { get; }
-
-        public List<DBTransaction> _transactions;
+        private List<DBTransaction> _transactions;
         public List<DBTransaction> Transactions
         {
             get
@@ -33,14 +33,15 @@ namespace BudgetSystemLab2.Entities
        
 
       
-        public DBWallet(Guid guid, string name, decimal balance, string currency, string owner )
+        public DBWallet(Guid guid, string name, decimal balance, string currency, string owner, string description, List<DBTransaction> transactions)
         {
             Guid = guid;
             Currency = currency;
             Name = name;
             Balance = balance;
             Owner = owner;
-            _transactions = new List<DBTransaction>();
+            Description = description;
+            Transactions = transactions;
         }
         public override string ToString()
         {
@@ -57,16 +58,18 @@ namespace BudgetSystemLab2.Entities
             _transactions.Add(transaction);
 
         }
-        public void EditTransaction(Guid userId, DBTransaction oldTransaction, decimal sum, string currency, Category category, DateTime dateTime, string description, string file)
+        public void EditTransaction(Guid guid, decimal sum, string currency, DateTime dateTime, string description)
         {
             //if (Owner != userId)
             //    throw new NoAccessException("You have no access to edit this transaction.");
             //check if transaction exists
             foreach (DBTransaction tr in _transactions)
             {
-                if (tr.Guid == oldTransaction.Guid)
+                if (tr.Guid == guid)
                 {
-                    Balance += CurrencyConverter.Convert(sum, currency, Currency) - CurrencyConverter.Convert(oldTransaction.Sum, oldTransaction.CurrencyOfTransaction, Currency);
+
+                    decimal dif = CurrencyConverter.Convert(sum, currency, Currency) - CurrencyConverter.Convert(tr.Sum, tr.CurrencyOfTransaction, Currency);
+                    Balance += dif;
                     tr.Sum = sum;
                     tr.CurrencyOfTransaction = currency;
                     //tr.Category = category;
@@ -77,7 +80,7 @@ namespace BudgetSystemLab2.Entities
             }
             throw new RecordNotFoundException("DBTransaction wasn`t found.");
         }
-        public void DeleteTransaction(Guid userId, DBTransaction transaction)
+        public void DeleteTransaction(DBTransaction transaction)
         {
             //check if transaction exists
             foreach (DBTransaction tr in _transactions)
@@ -139,7 +142,7 @@ namespace BudgetSystemLab2.Entities
             List<DBTransaction> lastMonthTransactionsList = new List<DBTransaction>();
             foreach (DBTransaction tr in Transactions)
             {
-                if (tr.DateTime.Month.Equals(DateTime.Now.AddMonths(-1).Month))
+                if ((tr.DateTime - DateTime.Now).TotalDays < 30)
                 {
                     lastMonthTransactionsList.Add(tr);
                 }

@@ -51,11 +51,11 @@ namespace BudgetSystemLab2.Wallets
                 MessageBox.Show($"Fill wallet`s name field!");
                 return;
             }
-               
+
             try
             {
-               IsWalletEnabled = false;
-               await _service.UpdateWallet(_wallet.Guid.ToString(), Name, Balance, CurrencyEntrySelected, _wallet.Owner);
+                IsWalletEnabled = false;
+                await _service.UpdateWallet(_wallet.Guid.ToString(), Name, Balance, CurrencyEntrySelected, _wallet.Owner, _wallet.Description, _wallet.Transactions);
 
             }
             catch (Exception ex)
@@ -67,13 +67,14 @@ namespace BudgetSystemLab2.Wallets
             {
                 IsWalletEnabled = true;
             }
+            RaisePropertyChanged(nameof(DisplayName));
             MessageBox.Show($"Wallet was updated successfully!");
         }
         private bool IsWalletValid()
         {
             return !String.IsNullOrWhiteSpace(Name);
         }
-      
+
 
         public string Name
         {
@@ -83,7 +84,19 @@ namespace BudgetSystemLab2.Wallets
             }
             set
             {
-                _wallet.Name = value;
+                    _wallet.Name = value;
+                  //  RaisePropertyChanged(nameof(DisplayName));
+            }
+        }
+        public string Description
+        {
+            get
+            {
+                return _wallet.Description;
+            }
+            set
+            {
+                _wallet.Description = value;
                 RaisePropertyChanged(nameof(DisplayName));
             }
         }
@@ -153,7 +166,21 @@ namespace BudgetSystemLab2.Wallets
         {
             get
             {
-                return $"{_wallet.Name} ({_wallet.Balance})";
+                return $"{_wallet.Name}";
+            }
+        }
+        public string DisplayLastMonthEarnings
+        {
+            get
+            {
+                return $"Last Month Earnings: {_wallet.GetLastMonthEarnings()}";
+            }
+        }
+        public string DisplayLastMonthSpendings
+        {
+            get
+            {
+                return $"Last Month Spendings: {_wallet.GetLastMonthSpendings()}";
             }
         }
         public DBWallet Wallet

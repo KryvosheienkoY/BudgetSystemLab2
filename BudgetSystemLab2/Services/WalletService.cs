@@ -51,9 +51,9 @@ namespace BudgetSystemLab2.Services
             var wallets = await _storage.GetAllAsync();
             return wallets;
         }
-        public async Task<bool> UpdateWallet(string guid, string name, decimal balance, string currency, string owner)
+        public async Task<bool> UpdateWallet(string guid, string name, decimal balance, string currency, string owner, string description, List<DBTransaction> transactions)
         {
-            DBWallet wallet = new DBWallet(Guid.Parse(guid), name, balance, currency, owner);
+            DBWallet wallet = new DBWallet(Guid.Parse(guid), name, balance, currency, owner, description, transactions);
             await _storage.AddOrUpdateAsync(wallet);
             return true;
         }

@@ -16,6 +16,8 @@ namespace BudgetSystemLab2.Transactions
     {
         private DBTransaction _transaction;
         private TransactionService _service;
+        private WalletService _serviceW;
+        private DBWallet _wallet;
         private bool _isTransactionEnabled = true;
         public bool IsTransactionEnabled
         {
@@ -33,9 +35,11 @@ namespace BudgetSystemLab2.Transactions
         public DelegateCommand DeleteTransaction { get; }
         public Guid TransactionGuid() { return _transaction.Guid; }
         public Guid TransactionWallet() { return _transaction.WalletId; }
-        public TransactionDetailsViewModel(DBTransaction transaction, TransactionService ws, Action<TransactionDetailsViewModel> DeleteCurrentTransaction)
+        public TransactionDetailsViewModel(DBTransaction transaction, TransactionService ws, WalletService wlts,DBWallet wallet,Action<TransactionDetailsViewModel> DeleteCurrentTransaction)
         {
             _service = ws;
+            _serviceW = wlts;
+            _wallet = wallet;
             _transaction = transaction;
             UpdateTransaction = new DelegateCommand(UpdateCurrentTransaction);
             DeleteTransaction = new DelegateCommand(async () => DeleteCurrentTransaction(this));
@@ -52,6 +56,9 @@ namespace BudgetSystemLab2.Transactions
             {
                 IsTransactionEnabled = false;
                 await _service.UpdateTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, Description, _transaction.UserId, _transaction.WalletId);
+                _wallet.EditTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, Description);
+                await _serviceW.UpdateWallet(_wallet.Guid.ToString(), _wallet.Name, _wallet.Balance, _wallet.Currency, _wallet.Owner, _wallet.Description, _wallet.Transactions);
+                RaisePropertyChanged(nameof(Wallets));
 
             }
             catch (Exception ex)
