@@ -17,36 +17,34 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" >
-            <TextBlock Margin="10, 10, 10, 0">Name</TextBlock>
+            <TextBlock Margin="10, 5, 10, 0">Name</TextBlock>
             <TextBox MinWidth="300" Margin="10" HorizontalAlignment="Stretch" 
                      Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
         <StackPanel Grid.Row="1" >
-            <TextBlock Margin="10, 10, 10, 0">Balance</TextBlock>
-            <TextBox MinWidth="300" Margin="10" HorizontalAlignment="Stretch" 
-                     Text="{Binding Balance, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <TextBlock Margin="10, 5, 10, 0"  Text="{Binding DisplayBalance}"></TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="2" >
-            <TextBlock Margin="10, 10, 10, 0">Currency</TextBlock>
-            <ComboBox  MinWidth="300" Margin="10" ItemsSource="{Binding Path=CurrencyEntries}"
+            <TextBlock Margin="10, 5, 10, 0">Currency</TextBlock>
+            <ComboBox  MinWidth="300" Margin="10, 5, 10, 0" ItemsSource="{Binding Path=CurrencyEntries}"
                   SelectedItem="{Binding Path=CurrencyEntrySelected}"
                     >
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Row="3" >
-            <TextBlock Margin="10, 10, 10, 0">Description</TextBlock>
-            <TextBox MinWidth="300" Margin="10" HorizontalAlignment="Stretch" 
+            <TextBlock Margin="10, 5, 10, 0">Description</TextBlock>
+            <TextBox MinWidth="300" Margin="10, 5, 10, 0" HorizontalAlignment="Stretch" 
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
         <StackPanel Grid.Row="4" >
-            <TextBlock Margin="10, 10, 10, 0"  Text="{Binding DisplayLastMonthEarnings}"></TextBlock>
+            <TextBlock Margin="10, 5, 10, 0"  Text="{Binding DisplayLastMonthEarnings}"></TextBlock>
         </StackPanel>
         <StackPanel Grid.Row="5" >
-            <TextBlock Margin="10, 10, 10, 0"  Text="{Binding DisplayLastMonthSpendings}"></TextBlock>
+            <TextBlock Margin="10, 5, 10, 0"  Text="{Binding DisplayLastMonthSpendings}"></TextBlock>
         </StackPanel>
         <StackPanel  Grid.Row="6" >
-            <Button Content="Delete Wallet"  Command="{Binding DeleteWallet}" Width="150"  Margin="10"/>
-            <Button Content="Update Wallet"  Command="{Binding UpdateWallet}" Width="150"  Margin="10"/>
+            <Button Content="Delete Wallet"  Command="{Binding DeleteWallet}" Width="150"  Margin="10, 5, 10, 0"/>
+            <Button Content="Update Wallet"  Command="{Binding UpdateWallet}" Width="150"  Margin="10, 5, 10, 0"/>
         </StackPanel>
     </Grid>
 </UserControl>

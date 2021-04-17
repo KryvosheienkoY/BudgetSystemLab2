@@ -60,16 +60,17 @@ namespace BudgetSystemLab2.Entities
         }
         public void EditTransaction(Guid guid, decimal sum, string currency, DateTime dateTime, string description)
         {
-            //if (Owner != userId)
-            //    throw new NoAccessException("You have no access to edit this transaction.");
-            //check if transaction exists
+         //   if (Owner != userId)
+          //      throw new NoAccessException("You have no access to edit this transaction.");
+         //   check if transaction exists
             foreach (DBTransaction tr in _transactions)
             {
                 if (tr.Guid == guid)
                 {
-
+                    //  decimal dif = sum;
                     decimal dif = CurrencyConverter.Convert(sum, currency, Currency) - CurrencyConverter.Convert(tr.Sum, tr.CurrencyOfTransaction, Currency);
                     Balance += dif;
+                    //Balance += sum;
                     tr.Sum = sum;
                     tr.CurrencyOfTransaction = currency;
                     //tr.Category = category;
@@ -79,6 +80,9 @@ namespace BudgetSystemLab2.Entities
                 }
             }
             throw new RecordNotFoundException("DBTransaction wasn`t found.");
+            //DBTransaction tr = new DBTransaction(Guid guid, decimal sum, string currency, DateTime dateTime, string description);
+            //DeleteTransaction(tr);
+            //AddTransaction(Owner, tr);
         }
         public void DeleteTransaction(DBTransaction transaction)
         {

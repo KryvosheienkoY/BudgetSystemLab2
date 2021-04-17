@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,6 +60,8 @@ namespace BudgetSystemLab2.Transactions
                 await _service.UpdateTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, Description, _transaction.UserId, _transaction.WalletId);
                 _wallet.EditTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, Description);
                 await _serviceW.UpdateWallet(_wallet.Guid.ToString(), _wallet.Name, _wallet.Balance, _wallet.Currency, _wallet.Owner, _wallet.Description, _wallet.Transactions);
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Transactions));
                 RaisePropertyChanged(nameof(Wallets));
 
             }
@@ -67,7 +71,7 @@ namespace BudgetSystemLab2.Transactions
                 return;
             }
             finally
-            {
+            {         
                 IsTransactionEnabled = true;
             }
             MessageBox.Show($"Transaction was updated successfully!");
@@ -77,7 +81,7 @@ namespace BudgetSystemLab2.Transactions
             //return !String.IsNullOrWhiteSpace(Sum);
             return true;
         }
-       
+
         public decimal Sum
         {
             get
@@ -88,6 +92,7 @@ namespace BudgetSystemLab2.Transactions
             {
                 _transaction.Sum = value;
                 RaisePropertyChanged(nameof(DisplayName));
+                _wallet.EditTransaction(TransactionGuid(), value, CurrencyEntrySelected, DateTime, Description);
             }
         }
            public string Description
@@ -98,8 +103,9 @@ namespace BudgetSystemLab2.Transactions
             }
             set
             {
+                _wallet.EditTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, DateTime, value);
                 _transaction.Description = value;
-                RaisePropertyChanged(nameof(DisplayName));
+                RaisePropertyChanged();
             }
         }
         
@@ -112,7 +118,8 @@ namespace BudgetSystemLab2.Transactions
             set
             {
                 _transaction.DateTime = value;
-                RaisePropertyChanged();
+                _wallet.EditTransaction(TransactionGuid(), Sum, CurrencyEntrySelected, value, Description);
+                RaisePropertyChanged(nameof(DateTime));
             }
         }
         public class CurrencyEntry
@@ -156,8 +163,11 @@ namespace BudgetSystemLab2.Transactions
             }
             set
             {
+
+                _wallet.EditTransaction(TransactionGuid(), Sum, value, DateTime, Description);
                 _currencySelected = value;
                 _transaction.CurrencyOfTransaction = _currencySelected;
+                RaisePropertyChanged(nameof(CurrencyEntrySelected));
             }
         }
 
@@ -166,7 +176,7 @@ namespace BudgetSystemLab2.Transactions
         {
             get
             {
-                return $"{_transaction.Sum}";
+                return $"{_transaction.Sum.ToString("0.##")}";
             }
         }
         public DBTransaction Transaction
@@ -176,5 +186,6 @@ namespace BudgetSystemLab2.Transactions
                 return _transaction;
             }
         }
+       
     }
 }

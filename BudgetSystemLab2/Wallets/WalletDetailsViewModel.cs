@@ -68,6 +68,7 @@ namespace BudgetSystemLab2.Wallets
                 IsWalletEnabled = true;
             }
             RaisePropertyChanged(nameof(DisplayName));
+            RaisePropertyChanged();
             MessageBox.Show($"Wallet was updated successfully!");
         }
         private bool IsWalletValid()
@@ -84,8 +85,8 @@ namespace BudgetSystemLab2.Wallets
             }
             set
             {
-                    _wallet.Name = value;
-                  //  RaisePropertyChanged(nameof(DisplayName));
+                _wallet.Name = value;
+                //  RaisePropertyChanged(nameof(DisplayName));
             }
         }
         public string Description
@@ -97,7 +98,7 @@ namespace BudgetSystemLab2.Wallets
             set
             {
                 _wallet.Description = value;
-                RaisePropertyChanged(nameof(DisplayName));
+                //RaisePropertyChanged(nameof(DisplayName));
             }
         }
 
@@ -106,11 +107,12 @@ namespace BudgetSystemLab2.Wallets
             get
             {
                 return _wallet.Balance;
+
             }
             set
             {
                 _wallet.Balance = value;
-                RaisePropertyChanged(nameof(DisplayName));
+                //   RaisePropertyChanged(nameof(DisplayName));
             }
         }
 
@@ -156,8 +158,11 @@ namespace BudgetSystemLab2.Wallets
             }
             set
             {
+                //count Balance
+                Balance = CurrencyConverter.Convert(Balance, _currencySelected, value);
                 _currencySelected = value;
                 _wallet.Currency = _currencySelected;
+                RaisePropertyChanged(nameof(DisplayBalance));
             }
         }
 
@@ -173,14 +178,21 @@ namespace BudgetSystemLab2.Wallets
         {
             get
             {
-                return $"Last Month Earnings: {_wallet.GetLastMonthEarnings()}";
+                return $"Last Month Earnings: {_wallet.GetLastMonthEarnings().ToString("0.##")}";
+            }
+        }
+        public string DisplayBalance
+        {
+            get
+            {
+                return $"Balance: {_wallet.Balance.ToString("0.##")}";
             }
         }
         public string DisplayLastMonthSpendings
         {
             get
             {
-                return $"Last Month Spendings: {_wallet.GetLastMonthSpendings()}";
+                return $"Last Month Spendings: {_wallet.GetLastMonthSpendings().ToString("0.##")}";
             }
         }
         public DBWallet Wallet

@@ -210,8 +210,9 @@ namespace BudgetSystemLab2.Wallets
 
                 RaisePropertyChanged(nameof(CurrentTransaction));
                 RaisePropertyChanged(nameof(Transactions));
+                RaisePropertyChanged(nameof(CurrentWallet));
                 RaisePropertyChanged(nameof(Wallets));
-                Update();
+               
             }
             catch (Exception ex)
             {
@@ -219,10 +220,9 @@ namespace BudgetSystemLab2.Wallets
                 return;
             }
             finally
-            {
+            {       
                 IsWalletPanelEnabled = true;
             }
-            Update();
             MessageBox.Show($"Transaction was deleted successfully!");
         }
         public async void DeleteCurrentWallet(WalletDetailsViewModel wd)
@@ -232,6 +232,7 @@ namespace BudgetSystemLab2.Wallets
                 IsWalletPanelEnabled = false;
                 await _serviceWallet.DeleteWalletsAsync(_currentWallet.Guid);
                 Wallets.Remove(wd);
+                
                 RaisePropertyChanged(nameof(CurrentWallet));
                 RaisePropertyChanged(nameof(Wallets));
             }
@@ -244,7 +245,7 @@ namespace BudgetSystemLab2.Wallets
             {
                 IsWalletPanelEnabled = true;
             }
-            Update();
+           
             MessageBox.Show($"Wallet was deleted successfully!");
         }
 
